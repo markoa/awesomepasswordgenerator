@@ -131,8 +131,10 @@ describe('normalizePasswordOptions', () => {
     const normalized = normalizePasswordOptions({
       include: {
         lowercase: true,
-        // uppercase, digits, symbols not provided
-      },
+        uppercase: undefined,
+        digits: undefined,
+        symbols: undefined,
+      } as any, // Partial object for testing
     });
     expect(normalized.include.lowercase).toBe(true);
     expect(normalized.include.uppercase).toBe(true); // default
@@ -143,7 +145,10 @@ describe('normalizePasswordOptions', () => {
     const normalized2 = normalizePasswordOptions({
       include: {
         symbols: true,
-      },
+        lowercase: undefined,
+        uppercase: undefined,
+        digits: undefined,
+      } as any, // Partial object for testing
     });
     expect(normalized2.include.lowercase).toBe(true); // default
     expect(normalized2.include.uppercase).toBe(true); // default
