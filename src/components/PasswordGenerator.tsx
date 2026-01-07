@@ -50,7 +50,40 @@ const defaultSettings: StoredSettings = {
   addSymbol: false,
 };
 
-function loadSettings(): StoredSettings {
+function isBoolean(value: unknown): value is boolean {
+  return typeof value === 'boolean';
+}
+
+function isString(value: unknown): value is string {
+  return typeof value === 'string';
+}
+
+function parseStoredLength(value: unknown): number {
+  if (Number.isInteger(value)) {
+    return Math.max(8, Math.min(128, value as number));
+  }
+  return defaultSettings.length;
+}
+
+function parseStoredWordCount(value: unknown): number {
+  if (Number.isInteger(value)) {
+    return Math.max(3, Math.min(10, value as number));
+  }
+  return defaultSettings.wordCount;
+}
+
+function parseStoredBoolean(
+  value: unknown,
+  fallback: boolean
+): boolean {
+  return isBoolean(value) ? value : fallback;
+}
+
+function parseStoredSeparator(value: unknown): string {
+  return isString(value) ? value : defaultSettings.separator;
+}
+
+export function loadSettings(): StoredSettings {
   if (typeof window === 'undefined') return defaultSettings;
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -59,28 +92,40 @@ function loadSettings(): StoredSettings {
       // Validate and merge with defaults
       return {
         mode: parsed.mode === 'passphrase' ? 'passphrase' : 'password',
-        length: Number.isInteger(parsed.length)
-          ? Math.max(8, Math.min(128, parsed.length))
-          : defaultSettings.length,
+        length: parseStoredLength(parsed.length),
         include: {
-          lowercase: parsed.include?.lowercase ?? defaultSettings.include.lowercase,
-          uppercase: parsed.include?.uppercase ?? defaultSettings.include.uppercase,
-          digits: parsed.include?.digits ?? defaultSettings.include.digits,
-          symbols: parsed.include?.symbols ?? defaultSettings.include.symbols,
+          lowercase: parseStoredBoolean(
+            parsed.include?.lowercase,
+            defaultSettings.include.lowercase
+          ),
+          uppercase: parseStoredBoolean(
+            parsed.include?.uppercase,
+            defaultSettings.include.uppercase
+          ),
+          digits: parseStoredBoolean(
+            parsed.include?.digits,
+            defaultSettings.include.digits
+          ),
+          symbols: parseStoredBoolean(
+            parsed.include?.symbols,
+            defaultSettings.include.symbols
+          ),
         },
-        excludeAmbiguous:
-          parsed.excludeAmbiguous ?? defaultSettings.excludeAmbiguous,
-        requireEachClass:
-          parsed.requireEachClass ?? defaultSettings.requireEachClass,
-        wordCount: Number.isInteger(parsed.wordCount)
-          ? Math.max(3, Math.min(10, parsed.wordCount))
-          : defaultSettings.wordCount,
-        separator: parsed.separator ?? defaultSettings.separator,
+        excludeAmbiguous: parseStoredBoolean(
+          parsed.excludeAmbiguous,
+          defaultSettings.excludeAmbiguous
+        ),
+        requireEachClass: parseStoredBoolean(
+          parsed.requireEachClass,
+          defaultSettings.requireEachClass
+        ),
+        wordCount: parseStoredWordCount(parsed.wordCount),
+        separator: parseStoredSeparator(parsed.separator),
         capitalization: ['none', 'first', 'random'].includes(parsed.capitalization)
           ? parsed.capitalization
           : defaultSettings.capitalization,
-        addDigit: parsed.addDigit ?? defaultSettings.addDigit,
-        addSymbol: parsed.addSymbol ?? defaultSettings.addSymbol,
+        addDigit: parseStoredBoolean(parsed.addDigit, defaultSettings.addDigit),
+        addSymbol: parseStoredBoolean(parsed.addSymbol, defaultSettings.addSymbol),
       };
     }
   } catch (e) {
@@ -703,4 +748,3 @@ export default function PasswordGenerator() {
     </div>
   );
 }
-

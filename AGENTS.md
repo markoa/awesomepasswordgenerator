@@ -26,6 +26,7 @@
 - Frameworks: Vitest + fast-check (property tests).
 - Focus on deterministic, bias-safe behavior (see `SPEC.md` §6).
 - Run `npm run test` for unit tests and `npm run test:coverage` before PRs.
+- Coding agents must run `npm run test` after every change.
 
 ## Commit & Pull Request Guidelines
 - Commit messages are short, imperative, and lowercase (examples in history: "add core module").
