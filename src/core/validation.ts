@@ -1,6 +1,8 @@
 import type {
   PasswordOptions,
   NormalizedPasswordOptions,
+  PassphraseOptions,
+  NormalizedPassphraseOptions,
   ValidationResult,
 } from './types';
 import {
@@ -9,6 +11,8 @@ import {
   PASSPHRASE_WORD_COUNT_MIN,
   PASSPHRASE_WORD_COUNT_MAX,
   DEFAULT_PASSWORD_LENGTH,
+  DEFAULT_PASSPHRASE_WORD_COUNT,
+  DEFAULT_PASSPHRASE_SEPARATOR,
 } from './constants';
 
 /**
@@ -123,6 +127,30 @@ export function validatePassphraseOptions(
   return {
     valid: errors.length === 0,
     errors,
+  };
+}
+
+/**
+ * Normalize passphrase options with defaults
+ * SPEC §5.2: Default passphrase settings
+ */
+export function normalizePassphraseOptions(
+  options: Partial<PassphraseOptions>
+): NormalizedPassphraseOptions {
+  const wordCount = Math.max(
+    PASSPHRASE_WORD_COUNT_MIN,
+    Math.min(
+      PASSPHRASE_WORD_COUNT_MAX,
+      Math.round(options.wordCount ?? DEFAULT_PASSPHRASE_WORD_COUNT)
+    )
+  );
+
+  return {
+    wordCount,
+    separator: options.separator ?? DEFAULT_PASSPHRASE_SEPARATOR,
+    capitalization: options.capitalization ?? 'none',
+    addDigit: options.addDigit ?? false,
+    addSymbol: options.addSymbol ?? false,
   };
 }
 

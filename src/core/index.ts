@@ -10,6 +10,7 @@ export {
   validatePasswordOptions,
   normalizePasswordOptions,
   validatePassphraseOptions,
+  normalizePassphraseOptions,
 } from './validation';
 export type {
   PasswordOptions,

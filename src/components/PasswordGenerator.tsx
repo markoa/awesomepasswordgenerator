@@ -1,11 +1,18 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   generatePassword,
+  generatePassphrase,
   type PasswordOptions,
+  type PassphraseOptions,
   DEFAULT_PASSWORD_LENGTH,
+  DEFAULT_PASSPHRASE_WORD_COUNT,
+  DEFAULT_PASSPHRASE_SEPARATOR,
 } from '../core';
 
+type Mode = 'password' | 'passphrase';
+
 interface StoredSettings {
+  mode: Mode;
   length: number;
   include: {
     lowercase: boolean;
@@ -15,11 +22,18 @@ interface StoredSettings {
   };
   excludeAmbiguous: boolean;
   requireEachClass: boolean;
+  // Passphrase settings
+  wordCount: number;
+  separator: string;
+  capitalization: 'none' | 'first' | 'random';
+  addDigit: boolean;
+  addSymbol: boolean;
 }
 
 const STORAGE_KEY = 'password-generator-settings';
 
 const defaultSettings: StoredSettings = {
+  mode: 'password',
   length: DEFAULT_PASSWORD_LENGTH,
   include: {
     lowercase: true,
@@ -29,6 +43,11 @@ const defaultSettings: StoredSettings = {
   },
   excludeAmbiguous: true,
   requireEachClass: true,
+  wordCount: DEFAULT_PASSPHRASE_WORD_COUNT,
+  separator: DEFAULT_PASSPHRASE_SEPARATOR,
+  capitalization: 'none',
+  addDigit: false,
+  addSymbol: false,
 };
 
 function loadSettings(): StoredSettings {
@@ -39,6 +58,7 @@ function loadSettings(): StoredSettings {
       const parsed = JSON.parse(stored);
       // Validate and merge with defaults
       return {
+        mode: parsed.mode === 'passphrase' ? 'passphrase' : 'password',
         length: Number.isInteger(parsed.length)
           ? Math.max(8, Math.min(128, parsed.length))
           : defaultSettings.length,
@@ -52,6 +72,15 @@ function loadSettings(): StoredSettings {
           parsed.excludeAmbiguous ?? defaultSettings.excludeAmbiguous,
         requireEachClass:
           parsed.requireEachClass ?? defaultSettings.requireEachClass,
+        wordCount: Number.isInteger(parsed.wordCount)
+          ? Math.max(3, Math.min(10, parsed.wordCount))
+          : defaultSettings.wordCount,
+        separator: parsed.separator ?? defaultSettings.separator,
+        capitalization: ['none', 'first', 'random'].includes(parsed.capitalization)
+          ? parsed.capitalization
+          : defaultSettings.capitalization,
+        addDigit: parsed.addDigit ?? defaultSettings.addDigit,
+        addSymbol: parsed.addSymbol ?? defaultSettings.addSymbol,
       };
     }
   } catch (e) {
@@ -81,24 +110,42 @@ export default function PasswordGenerator() {
 
   const generate = useCallback(() => {
     try {
-      const options: PasswordOptions = {
-        length: settings.length,
-        include: settings.include,
-        excludeAmbiguous: settings.excludeAmbiguous,
-        requireEachClass: settings.requireEachClass,
-      };
-      const newPassword = generatePassword(options);
-      setPassword(newPassword);
+      if (settings.mode === 'passphrase') {
+        const options: PassphraseOptions = {
+          wordCount: settings.wordCount,
+          separator: settings.separator,
+          capitalization: settings.capitalization,
+          addDigit: settings.addDigit,
+          addSymbol: settings.addSymbol,
+        };
+        const newPassphrase = generatePassphrase(options);
+        setPassword(newPassphrase);
+      } else {
+        const options: PasswordOptions = {
+          length: settings.length,
+          include: settings.include,
+          excludeAmbiguous: settings.excludeAmbiguous,
+          requireEachClass: settings.requireEachClass,
+        };
+        const newPassword = generatePassword(options);
+        setPassword(newPassword);
+      }
       setCopied(false);
     } catch (error) {
       // Should not happen with valid settings, but handle gracefully
-      console.error('Password generation error:', error);
+      console.error('Generation error:', error);
     }
   }, [
+    settings.mode,
     settings.length,
     settings.include,
     settings.excludeAmbiguous,
     settings.requireEachClass,
+    settings.wordCount,
+    settings.separator,
+    settings.capitalization,
+    settings.addDigit,
+    settings.addSymbol,
   ]);
 
   // Save settings to localStorage when they change
@@ -186,21 +233,21 @@ export default function PasswordGenerator() {
           break;
         case 'm':
           e.preventDefault();
-          // Toggle passphrase mode (stub for now)
+          updateSetting('mode', settings.mode === 'password' ? 'passphrase' : 'password');
           break;
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [generate, handleCopy, settings.include.symbols]);
+  }, [generate, handleCopy, settings.include.symbols, settings.mode]);
 
   return (
     <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-6 sm:p-8 space-y-6">
       {/* Password Output Section */}
       <div className="space-y-4">
         <label htmlFor="password-output" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-          Your new password
+          {settings.mode === 'passphrase' ? 'Your new passphrase' : 'Your new password'}
         </label>
         <div className="relative">
           <input
@@ -266,8 +313,41 @@ export default function PasswordGenerator() {
       </div>
 
       <div className="border-t border-gray-200 dark:border-gray-700 pt-6 space-y-6">
-        {/* Password Length */}
+        {/* Mode Toggle */}
         <div className="space-y-3">
+          <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100">
+            Mode
+          </label>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => updateSetting('mode', 'password')}
+              className={`flex-1 px-4 py-2.5 rounded-lg font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                settings.mode === 'password'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+              }`}
+            >
+              Password
+            </button>
+            <button
+              type="button"
+              onClick={() => updateSetting('mode', 'passphrase')}
+              className={`flex-1 px-4 py-2.5 rounded-lg font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                settings.mode === 'passphrase'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+              }`}
+            >
+              Passphrase
+            </button>
+          </div>
+        </div>
+
+        {settings.mode === 'password' ? (
+          <>
+            {/* Password Length */}
+            <div className="space-y-3">
           <label htmlFor="length-slider" className="block text-sm font-semibold text-gray-900 dark:text-gray-100">
             Password Length
           </label>
@@ -447,13 +527,147 @@ export default function PasswordGenerator() {
                 </span>
               </div>
             </label>
-            <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                More options like passphrase mode and custom symbols are coming soon.
-              </p>
-            </div>
           </div>
         </details>
+          </>
+        ) : (
+          <>
+            {/* Passphrase Word Count */}
+            <div className="space-y-3">
+              <label htmlFor="word-count-slider" className="block text-sm font-semibold text-gray-900 dark:text-gray-100">
+                Number of Words
+              </label>
+              <div className="flex gap-4 items-center">
+                <input
+                  id="word-count-slider"
+                  type="range"
+                  min="3"
+                  max="10"
+                  value={settings.wordCount}
+                  onChange={(e) =>
+                    updateSetting('wordCount', parseInt(e.target.value, 10))
+                  }
+                  className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-600 dark:accent-blue-500"
+                  aria-label="Word count"
+                />
+                <input
+                  type="number"
+                  min="3"
+                  max="10"
+                  value={settings.wordCount}
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value, 10);
+                    if (!isNaN(value) && value >= 3 && value <= 10) {
+                      updateSetting('wordCount', value);
+                    }
+                  }}
+                  className="w-20 px-3 py-1.5 text-center border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  aria-label="Word count (number input)"
+                />
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                More words make your passphrase more secure. We recommend at least 4 words.
+              </p>
+            </div>
+
+            {/* Separator */}
+            <div className="space-y-3">
+              <label htmlFor="separator-input" className="block text-sm font-semibold text-gray-900 dark:text-gray-100">
+                Word Separator
+              </label>
+              <input
+                id="separator-input"
+                type="text"
+                maxLength={1}
+                value={settings.separator}
+                onChange={(e) => updateSetting('separator', e.target.value || '-')}
+                className="w-20 px-3 py-1.5 text-center border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono"
+                aria-label="Word separator"
+              />
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Character used to separate words (e.g., "-", "_", " " or none)
+              </p>
+            </div>
+
+            {/* Capitalization */}
+            <div className="space-y-3">
+              <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100">
+                Capitalization
+              </label>
+              <div className="space-y-2">
+                <label className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors">
+                  <input
+                    type="radio"
+                    name="capitalization"
+                    value="none"
+                    checked={settings.capitalization === 'none'}
+                    onChange={() => updateSetting('capitalization', 'none')}
+                    className="w-4 h-4 text-blue-600 dark:text-blue-500 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                  />
+                  <span className="text-sm text-gray-900 dark:text-gray-100">All lowercase (default)</span>
+                </label>
+                <label className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors">
+                  <input
+                    type="radio"
+                    name="capitalization"
+                    value="first"
+                    checked={settings.capitalization === 'first'}
+                    onChange={() => updateSetting('capitalization', 'first')}
+                    className="w-4 h-4 text-blue-600 dark:text-blue-500 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                  />
+                  <span className="text-sm text-gray-900 dark:text-gray-100">First letter of each word</span>
+                </label>
+                <label className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors">
+                  <input
+                    type="radio"
+                    name="capitalization"
+                    value="random"
+                    checked={settings.capitalization === 'random'}
+                    onChange={() => updateSetting('capitalization', 'random')}
+                    className="w-4 h-4 text-blue-600 dark:text-blue-500 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                  />
+                  <span className="text-sm text-gray-900 dark:text-gray-100">Randomly capitalize one word</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Add Digit/Symbol */}
+            <div className="space-y-3">
+              <label className="flex items-start gap-3 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors">
+                <input
+                  type="checkbox"
+                  checked={settings.addDigit}
+                  onChange={(e) => updateSetting('addDigit', e.target.checked)}
+                  className="mt-0.5 w-5 h-5 text-blue-600 dark:text-blue-500 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                />
+                <div className="flex-1">
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100 block">
+                    Add numbers at the end
+                  </span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Appends two random digits to the end of your passphrase
+                  </span>
+                </div>
+              </label>
+              <label className="flex items-start gap-3 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors">
+                <input
+                  type="checkbox"
+                  checked={settings.addSymbol}
+                  onChange={(e) => updateSetting('addSymbol', e.target.checked)}
+                  className="mt-0.5 w-5 h-5 text-blue-600 dark:text-blue-500 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                />
+                <div className="flex-1">
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100 block">
+                    Add special character at the end
+                  </span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Appends one random special character to the end of your passphrase
+                  </span>
+                </div>
+              </label>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Keyboard Shortcuts Hint */}
@@ -463,7 +677,8 @@ export default function PasswordGenerator() {
           <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">G</kbd>enerate,{' '}
           <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">C</kbd>opy,{' '}
           <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">L</kbd>ength,{' '}
-          <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">S</kbd>ymbols
+          <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">S</kbd>ymbols,{' '}
+          <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">M</kbd>ode
         </p>
       </div>
     </div>
