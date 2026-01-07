@@ -26,11 +26,13 @@
   "homepage": "https://github.com/markoa/awesomepasswordgenerator#readme",
   "dependencies": {
     "@astrojs/react": "^4.4.2",
+    "@tailwindcss/vite": "^4.1.18",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "astro": "^5.16.6",
     "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+    "react-dom": "^19.2.3",
+    "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^2.1.8",
