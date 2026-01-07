@@ -1,0 +1,42 @@
+# Security Headers for Awesome Password Generator
+# Cloudflare Pages automatically applies these headers to all responses
+# SPEC §2.4: Hardening (deployment headers)
+
+/*
+  # Content Security Policy
+  # SPEC §2.4: Strict CSP with no third-party scripts
+  # - 'self': Only allow resources from same origin
+  # - 'unsafe-inline' for styles: Required for Tailwind CSS
+  # - frame-ancestors 'none': Prevent embedding in iframes (clickjacking protection)
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none';
+  
+  # HSTS: Force HTTPS connections
+  # SPEC §2.4: Include HSTS
+  # max-age=31536000 = 1 year, includeSubDomains applies to all subdomains
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  
+  # Prevent MIME type sniffing
+  # SPEC §2.4: Include X-Content-Type-Options
+  X-Content-Type-Options: nosniff
+  
+  # Control referrer information sent to other sites
+  # SPEC §2.4: Include Referrer-Policy
+  # strict-origin-when-cross-origin: Only send origin (not full URL) when navigating to different sites
+  Referrer-Policy: strict-origin-when-cross-origin
+  
+  # Disable unnecessary browser features/APIs
+  # SPEC §2.4: Conservative Permissions-Policy
+  # This project doesn't need geolocation, camera, microphone, etc.
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=(), bluetooth=(), magnetometer=(), gyroscope=(), accelerometer=(), ambient-light-sensor=()
+  
+  # Additional security headers (not in SPEC but good practice)
+  # Prevent clickjacking (redundant with CSP frame-ancestors but some browsers need it)
+  X-Frame-Options: DENY
+  
+  # Disable legacy XSS filter (modern browsers handle this via CSP)
+  X-XSS-Protection: 0
+  
+  # Cross-origin policies for additional isolation
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+
