@@ -86,5 +86,43 @@ describe('generatePassphrase', () => {
     // Very unlikely all 10 would be the same
     expect(results.size).toBeGreaterThan(1);
   });
+
+  it('should handle empty separator correctly', () => {
+    const result = generatePassphrase({ wordCount: 3, separator: '' });
+    // With empty separator, words should be concatenated
+    expect(result.length).toBeGreaterThan(0);
+    // Should not contain the default separator
+    expect(result).not.toContain(DEFAULT_PASSPHRASE_SEPARATOR);
+  });
+
+  it('should handle space separator', () => {
+    const result = generatePassphrase({ wordCount: 3, separator: ' ' });
+    const words = result.split(' ');
+    expect(words.length).toBe(3);
+  });
+
+  it('should handle all capitalization modes correctly', () => {
+    const modes: Array<'none' | 'first' | 'random'> = ['none', 'first', 'random'];
+    modes.forEach((mode) => {
+      const result = generatePassphrase({
+        wordCount: 4,
+        capitalization: mode,
+      });
+      expect(result).toBeTruthy();
+      expect(typeof result).toBe('string');
+    });
+  });
+
+  it('should generate passphrase with maximum word count', () => {
+    const result = generatePassphrase({ wordCount: 10 });
+    const words = result.split(DEFAULT_PASSPHRASE_SEPARATOR);
+    expect(words.length).toBe(10);
+  });
+
+  it('should generate passphrase with minimum word count', () => {
+    const result = generatePassphrase({ wordCount: 3 });
+    const words = result.split(DEFAULT_PASSPHRASE_SEPARATOR);
+    expect(words.length).toBe(3);
+  });
 });
 

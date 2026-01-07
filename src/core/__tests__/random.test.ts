@@ -63,6 +63,33 @@ describe('uniformRandomIndex', () => {
     expect(() => uniformRandomIndex(rng, 0)).toThrow('n must be positive');
     expect(() => uniformRandomIndex(rng, -1)).toThrow('n must be positive');
   });
+
+  it('should handle large n values (like wordlist size 2048)', () => {
+    // Test with n = 2048 (wordlist size)
+    // This requires multiple bytes since 2048 > 256
+    const rng = createTestRng([0, 0, 0, 0, 0, 0, 0, 0]); // All zeros = 0
+    const result = uniformRandomIndex(rng, 2048);
+    expect(result).toBeGreaterThanOrEqual(0);
+    expect(result).toBeLessThan(2048);
+  });
+
+  it('should handle n values between 256 and 65536', () => {
+    // Test with n = 1000
+    const rng = createTestRng([0, 0, 0, 0]); // 2 bytes needed
+    const result = uniformRandomIndex(rng, 1000);
+    expect(result).toBeGreaterThanOrEqual(0);
+    expect(result).toBeLessThan(1000);
+  });
+
+  it('should produce valid indices for various large n values', () => {
+    const testCases = [500, 1000, 2048, 5000, 10000];
+    testCases.forEach((n) => {
+      const rng = createTestRng([Math.floor(Math.random() * 256), Math.floor(Math.random() * 256)]);
+      const result = uniformRandomIndex(rng, n);
+      expect(result).toBeGreaterThanOrEqual(0);
+      expect(result).toBeLessThan(n);
+    });
+  });
 });
 
 describe('shuffle', () => {

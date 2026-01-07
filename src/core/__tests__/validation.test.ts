@@ -3,6 +3,7 @@ import {
   validatePasswordOptions,
   normalizePasswordOptions,
   validatePassphraseOptions,
+  normalizePassphraseOptions,
 } from '../validation';
 import {
   PASSWORD_LENGTH_MIN,
@@ -10,6 +11,8 @@ import {
   PASSPHRASE_WORD_COUNT_MIN,
   PASSPHRASE_WORD_COUNT_MAX,
   DEFAULT_PASSWORD_LENGTH,
+  DEFAULT_PASSPHRASE_WORD_COUNT,
+  DEFAULT_PASSPHRASE_SEPARATOR,
 } from '../constants';
 
 describe('validatePasswordOptions', () => {
@@ -191,3 +194,46 @@ describe('validatePassphraseOptions', () => {
   });
 });
 
+describe('normalizePassphraseOptions', () => {
+  it('should apply defaults from SPEC §5.2', () => {
+    const normalized = normalizePassphraseOptions({});
+    expect(normalized.wordCount).toBe(DEFAULT_PASSPHRASE_WORD_COUNT);
+    expect(normalized.separator).toBe(DEFAULT_PASSPHRASE_SEPARATOR);
+    expect(normalized.capitalization).toBe('none');
+    expect(normalized.addDigit).toBe(false);
+    expect(normalized.addSymbol).toBe(false);
+  });
+
+  it('should clamp word count to valid bounds', () => {
+    const tooShort = normalizePassphraseOptions({ wordCount: 1 });
+    expect(tooShort.wordCount).toBe(PASSPHRASE_WORD_COUNT_MIN);
+
+    const tooLong = normalizePassphraseOptions({ wordCount: 20 });
+    expect(tooLong.wordCount).toBe(PASSPHRASE_WORD_COUNT_MAX);
+  });
+
+  it('should round non-integer word counts', () => {
+    const normalized = normalizePassphraseOptions({ wordCount: 5.7 });
+    expect(normalized.wordCount).toBe(6);
+  });
+
+  it('should preserve provided options', () => {
+    const normalized = normalizePassphraseOptions({
+      wordCount: 7,
+      separator: '_',
+      capitalization: 'first',
+      addDigit: true,
+      addSymbol: true,
+    });
+    expect(normalized.wordCount).toBe(7);
+    expect(normalized.separator).toBe('_');
+    expect(normalized.capitalization).toBe('first');
+    expect(normalized.addDigit).toBe(true);
+    expect(normalized.addSymbol).toBe(true);
+  });
+
+  it('should handle empty separator', () => {
+    const normalized = normalizePassphraseOptions({ separator: '' });
+    expect(normalized.separator).toBe('');
+  });
+});
