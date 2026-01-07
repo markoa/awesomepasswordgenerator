@@ -49,7 +49,7 @@ Generate a multi-word passphrase with optional separator and capitalization rule
 
 ## 4. UX Requirements
 
-### 4.ules
+### 4.1 Rules
 - The main page must be usable entirely via keyboard.
 - Provide explicit hotkeys:
   - `g`: generate/regenerate
