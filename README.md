@@ -3,6 +3,8 @@
 A minimal, open source password generator that runs entirely in your browser.  
 No tracking, no ads, no network calls required to generate.
 
+Live: [awesomepasswordgenerator.com](https://awesomepasswordgenerator.com).
+
 ## Why it exists
 I got tired of using bloated password generator sites. I wanted a simple, trustworthy tool I could share with anyone.
 
@@ -12,12 +14,14 @@ npm install
 npm run dev
 ```
 
-Or use it at [awesomepasswordgenerator.com](https://awesomepasswordgenerator.com).
-
 ## Tests
 ```sh
 npm run test
 ```
+
+Built with Astro, React, Tailwind CSS, and TypeScript.
+
+Deploys on Cloudflare Pages after running the test suite.
 
 ## Security & privacy
 - Passwords are generated locally (client‑side only).
