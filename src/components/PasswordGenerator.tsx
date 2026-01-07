@@ -104,6 +104,7 @@ export default function PasswordGenerator() {
   const [copied, setCopied] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const lengthInputRef = useRef<HTMLInputElement>(null);
+  const wordCountInputRef = useRef<HTMLInputElement>(null);
   const outputRef = useRef<HTMLInputElement>(null);
   const copyAnnouncementRef = useRef<HTMLDivElement>(null);
 
@@ -225,11 +226,21 @@ export default function PasswordGenerator() {
           break;
         case 'l':
           e.preventDefault();
-          lengthInputRef.current?.focus();
+          // Focus length input in password mode, word count input in passphrase mode
+          if (settings.mode === 'password') {
+            lengthInputRef.current?.focus();
+          } else {
+            wordCountInputRef.current?.focus();
+          }
           break;
         case 's':
           e.preventDefault();
-          updateInclude('symbols', !settings.include.symbols);
+          // Toggle symbols in password mode, toggle addSymbol in passphrase mode
+          if (settings.mode === 'password') {
+            updateInclude('symbols', !settings.include.symbols);
+          } else {
+            updateSetting('addSymbol', !settings.addSymbol);
+          }
           break;
         case 'm':
           e.preventDefault();
@@ -240,7 +251,7 @@ export default function PasswordGenerator() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [generate, handleCopy, settings.include.symbols, settings.mode]);
+  }, [generate, handleCopy, settings.include.symbols, settings.mode, settings.addSymbol]);
 
   return (
     <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-6 sm:p-8 space-y-6">
@@ -556,6 +567,7 @@ export default function PasswordGenerator() {
                   aria-label="Word count"
                 />
                 <input
+                  ref={wordCountInputRef}
                   type="number"
                   min="3"
                   max="10"
@@ -681,8 +693,10 @@ export default function PasswordGenerator() {
           <span className="font-medium">Keyboard shortcuts:</span>{' '}
           <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">G</kbd>enerate,{' '}
           <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">C</kbd>opy,{' '}
-          <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">L</kbd>ength,{' '}
-          <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">S</kbd>ymbols,{' '}
+          <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">L</kbd>
+          {settings.mode === 'password' ? 'ength' : 'ength/words'},{' '}
+          <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">S</kbd>
+          {settings.mode === 'password' ? 'ymbols' : 'ymbol (passphrase)'},{' '}
           <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">M</kbd>ode
         </p>
       </div>
