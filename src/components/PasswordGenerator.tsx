@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   generatePassword,
-  estimateEntropy,
   type PasswordOptions,
   DEFAULT_PASSWORD_LENGTH,
 } from '../core';
@@ -196,8 +195,6 @@ export default function PasswordGenerator() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [generate, handleCopy, settings.include.symbols]);
 
-  const entropy = estimateEntropy(settings);
-
   return (
     <div className="password-generator">
       <div className="output-section">
@@ -240,11 +237,6 @@ export default function PasswordGenerator() {
         >
           {copied ? 'Password copied to clipboard' : ''}
         </div>
-      </div>
-
-      <div className="entropy-display">
-        <span className="entropy-label">Entropy:</span>
-        <span className="entropy-value">{entropy.toFixed(1)} bits</span>
       </div>
 
       <div className="controls">

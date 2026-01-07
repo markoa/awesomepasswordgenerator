@@ -179,14 +179,7 @@ Provide a visible link:
 - To repository (GitHub) and
 - To a specific file/section for the generator implementation.
 
-### 9.2 Entropy display (MVP recommended)
-Display estimated entropy:
-- `entropy_bits = length * log2(charset_size)` in password mode when not requiring each class.
-- If requiring each class, still show entropy based on union charset size, but include a tooltip/disclaimer noting constraints slightly reduce combinations.
-
-Do not present crack-time as definitive; if included, label clearly as rough estimates.
-
-### 9.3 No third-party resources
+### 9.2 No third-party resources
 - No third-party scripts, trackers, fonts, analytics.
 - If any are introduced, they must be explicitly documented and justified.
 
