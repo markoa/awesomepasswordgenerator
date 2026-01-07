@@ -1,0 +1,43 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`normalizePasswordOptions snapshot > should normalize empty options to defaults 1`] = `
+{
+  "excludeAmbiguous": true,
+  "include": {
+    "digits": true,
+    "lowercase": true,
+    "symbols": false,
+    "uppercase": true,
+  },
+  "length": 20,
+  "requireEachClass": true,
+}
+`;
+
+exports[`normalizePasswordOptions snapshot > should normalize partial options 1`] = `
+{
+  "excludeAmbiguous": true,
+  "include": {
+    "digits": true,
+    "lowercase": true,
+    "symbols": true,
+    "uppercase": false,
+  },
+  "length": 25,
+  "requireEachClass": true,
+}
+`;
+
+exports[`normalizePasswordOptions snapshot > should normalize with all options provided 1`] = `
+{
+  "excludeAmbiguous": false,
+  "include": {
+    "digits": true,
+    "lowercase": true,
+    "symbols": true,
+    "uppercase": true,
+  },
+  "length": 30,
+  "requireEachClass": false,
+}
+`;
