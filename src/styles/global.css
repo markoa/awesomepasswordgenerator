@@ -1,1 +1,66 @@
 @import "tailwindcss";
+
+/* Custom range slider styling for better UX */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgb(37 99 235); /* blue-600 */
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.dark input[type="range"]::-webkit-slider-thumb {
+  background: rgb(59 130 246); /* blue-500 */
+  border-color: rgb(31 41 55); /* gray-800 */
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgb(37 99 235); /* blue-600 */
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.dark input[type="range"]::-moz-range-thumb {
+  background: rgb(59 130 246); /* blue-500 */
+  border-color: rgb(31 41 55); /* gray-800 */
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  background: rgb(29 78 216); /* blue-700 */
+}
+
+.dark input[type="range"]::-webkit-slider-thumb:hover {
+  background: rgb(96 165 250); /* blue-400 */
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  background: rgb(29 78 216); /* blue-700 */
+}
+
+.dark input[type="range"]::-moz-range-thumb:hover {
+  background: rgb(96 165 250); /* blue-400 */
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

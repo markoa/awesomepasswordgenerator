@@ -1,352 +1,52 @@
 ---
 import PasswordGenerator from '../components/PasswordGenerator';
+import '../styles/global.css'
 ---
 
-<html lang="en">
+<html lang="en" class="h-full">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Generate strong, secure passwords locally in your browser. No tracking, no network calls, completely private." />
     <title>Awesome Password Generator</title>
-    <style>
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-
-      :root {
-        --color-bg: #ffffff;
-        --color-text: #1a1a1a;
-        --color-border: #e0e0e0;
-        --color-primary: #0066cc;
-        --color-primary-hover: #0052a3;
-        --color-success: #008000;
-        --color-focus: #0066cc;
-        --spacing-xs: 0.25rem;
-        --spacing-sm: 0.5rem;
-        --spacing-md: 1rem;
-        --spacing-lg: 1.5rem;
-        --spacing-xl: 2rem;
-        --border-radius: 0.375rem;
-        --font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo,
-          Consolas, 'DejaVu Sans Mono', monospace;
-      }
-
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --color-bg: #1a1a1a;
-          --color-text: #e0e0e0;
-          --color-border: #404040;
-          --color-primary: #4da6ff;
-          --color-primary-hover: #66b3ff;
-        }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
-        }
-      }
-
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-          Oxygen, Ubuntu, Cantarell, sans-serif;
-        background-color: var(--color-bg);
-        color: var(--color-text);
-        line-height: 1.6;
-        padding: var(--spacing-md);
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .container {
-        width: 100%;
-        max-width: 600px;
-      }
-
-      h1 {
-        text-align: center;
-        margin-bottom: var(--spacing-xl);
-        font-size: 2rem;
-        font-weight: 700;
-      }
-
-      .password-generator {
-        background: var(--color-bg);
-        border: 1px solid var(--color-border);
-        border-radius: var(--border-radius);
-        padding: var(--spacing-lg);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      }
-
-      .output-section {
-        margin-bottom: var(--spacing-lg);
-      }
-
-      .output-field {
-        width: 100%;
-        padding: var(--spacing-md);
-        font-family: var(--font-mono);
-        font-size: 1.125rem;
-        border: 2px solid var(--color-border);
-        border-radius: var(--border-radius);
-        background: var(--color-bg);
-        color: var(--color-text);
-        margin-bottom: var(--spacing-sm);
-        text-align: center;
-        user-select: all;
-      }
-
-      .output-field:focus {
-        outline: 2px solid var(--color-focus);
-        outline-offset: 2px;
-      }
-
-      .output-actions {
-        display: flex;
-        gap: var(--spacing-sm);
-      }
-
-      .btn {
-        flex: 1;
-        padding: var(--spacing-sm) var(--spacing-md);
-        font-size: 1rem;
-        border: 1px solid var(--color-border);
-        border-radius: var(--border-radius);
-        background: var(--color-primary);
-        color: white;
-        cursor: pointer;
-        transition: background-color 0.2s;
-      }
-
-      .btn:hover {
-        background: var(--color-primary-hover);
-      }
-
-      .btn:focus {
-        outline: 2px solid var(--color-focus);
-        outline-offset: 2px;
-      }
-
-      .btn:active {
-        transform: scale(0.98);
-      }
-
-      .btn-copy {
-        background: var(--color-success);
-      }
-
-      .btn-copy:hover {
-        background: #006600;
-      }
-
-      .controls {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-lg);
-      }
-
-      .control-group {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-sm);
-      }
-
-      .control-label {
-        font-weight: 600;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-      }
-
-      .length-controls {
-        display: flex;
-        gap: var(--spacing-md);
-        align-items: center;
-      }
-
-      .length-slider {
-        flex: 1;
-        height: 0.5rem;
-        border-radius: var(--border-radius);
-        background: var(--color-border);
-        outline: none;
-      }
-
-      .length-slider::-webkit-slider-thumb {
-        appearance: none;
-        width: 1.25rem;
-        height: 1.25rem;
-        border-radius: 50%;
-        background: var(--color-primary);
-        cursor: pointer;
-      }
-
-      .length-slider::-moz-range-thumb {
-        width: 1.25rem;
-        height: 1.25rem;
-        border-radius: 50%;
-        background: var(--color-primary);
-        cursor: pointer;
-        border: none;
-      }
-
-      .length-input {
-        width: 4rem;
-        padding: var(--spacing-xs) var(--spacing-sm);
-        border: 1px solid var(--color-border);
-        border-radius: var(--border-radius);
-        background: var(--color-bg);
-        color: var(--color-text);
-        text-align: center;
-      }
-
-      .length-input:focus {
-        outline: 2px solid var(--color-focus);
-        outline-offset: 2px;
-      }
-
-      .length-value {
-        font-weight: 700;
-        color: var(--color-primary);
-      }
-
-      fieldset {
-        border: 1px solid var(--color-border);
-        border-radius: var(--border-radius);
-        padding: var(--spacing-md);
-      }
-
-      legend {
-        padding: 0 var(--spacing-sm);
-      }
-
-      .checkbox-group {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: var(--spacing-sm);
-        margin-top: var(--spacing-sm);
-      }
-
-      .checkbox-label {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-sm);
-        cursor: pointer;
-        font-size: 0.9375rem;
-      }
-
-      .checkbox-label input[type='checkbox'] {
-        width: 1.25rem;
-        height: 1.25rem;
-        cursor: pointer;
-        accent-color: var(--color-primary);
-      }
-
-      .advanced-section {
-        margin-top: var(--spacing-sm);
-      }
-
-      .advanced-toggle {
-        cursor: pointer;
-        font-weight: 600;
-        padding: var(--spacing-sm);
-        border: 1px solid var(--color-border);
-        border-radius: var(--border-radius);
-        background: var(--color-bg);
-        list-style: none;
-      }
-
-      .advanced-toggle:hover {
-        background: var(--color-border);
-      }
-
-      .advanced-toggle::-webkit-details-marker {
-        display: none;
-      }
-
-      .advanced-content {
-        margin-top: var(--spacing-md);
-        padding: var(--spacing-md);
-        border: 1px solid var(--color-border);
-        border-radius: var(--border-radius);
-        background: var(--color-bg);
-      }
-
-      .advanced-note {
-        margin-top: var(--spacing-md);
-        padding-top: var(--spacing-md);
-        border-top: 1px solid var(--color-border);
-        font-size: 0.875rem;
-        color: var(--color-text);
-        opacity: 0.8;
-      }
-
-      .keyboard-hints {
-        margin-top: var(--spacing-lg);
-        padding-top: var(--spacing-md);
-        border-top: 1px solid var(--color-border);
-        text-align: center;
-        font-size: 0.875rem;
-        color: var(--color-text);
-        opacity: 0.7;
-      }
-
-      .hints-text kbd {
-        display: inline-block;
-        padding: 0.125rem 0.375rem;
-        background: var(--color-border);
-        border: 1px solid var(--color-border);
-        border-radius: 0.25rem;
-        font-family: var(--font-mono);
-        font-size: 0.75rem;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-      }
-
-      .sr-only {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border-width: 0;
-      }
-
-      @media (max-width: 640px) {
-        body {
-          padding: var(--spacing-sm);
-        }
-
-        .checkbox-group {
-          grid-template-columns: 1fr;
-        }
-
-        .length-controls {
-          flex-direction: column;
-          align-items: stretch;
-        }
-
-        .length-input {
-          width: 100%;
-        }
-      }
-    </style>
   </head>
-  <body>
-    <div class="container">
-      <h1>Awesome Password Generator</h1>
+  <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans antialiased flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
+    <div class="w-full max-w-2xl">
+      <header class="text-center mb-8 sm:mb-12">
+        <h1 class="text-3xl sm:text-4xl font-bold mb-2 text-gray-900 dark:text-white">
+          Awesome Password Generator
+        </h1>
+        <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-md mx-auto">
+          Create strong, secure passwords instantly. Everything happens in your browser—nothing is sent over the internet.
+        </p>
+      </header>
       <PasswordGenerator client:load />
+      <footer class="mt-8 text-center text-xs sm:text-sm text-gray-500 dark:text-gray-500">
+        <p>
+          <a 
+            href="https://github.com/markoa/awesomepasswordgenerator"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="underline hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+          >
+            View source code
+          </a>
+          <span> • </span>
+          <a 
+            href="/security" 
+            class="underline hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+          >
+            Security info
+          </a>
+          <span> • </span>
+          <a 
+            href="/privacy" 
+            class="underline hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+          >
+            Privacy
+          </a>
+        </p>
+      </footer>
     </div>
   </body>
 </html>

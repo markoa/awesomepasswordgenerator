@@ -2,7 +2,7 @@
 
 ## 0. Purpose
 
-Build an open-source, minimal, ad-free password generator website that is:
+Build an open source, minimal, ad-free password generator website that is:
 - Fast (instant generation)
 - Trustworthy (transparent implementation, no third-party scripts)
 - Private (no network calls required to generate)
@@ -193,7 +193,7 @@ Set explicit budgets (enforced by CI if possible):
 ## 11. Tech / Architecture
 
 ### 11.1 Development stack
-- Astro + TypeScript
+- Astro + TypeScript + Tailwind CSS
 - One client “island” for interactive UI
 - Core logic in a framework-agnostic module (`src/core`)
 
@@ -233,7 +233,7 @@ CI checks:
 
 ## 14. Release / Deployment
 
-- Static hosting (Cloudflare Pages / Netlify / Vercel)
+- Static hosting on Cloudflare Pages.
 - Show build commit hash in footer.
 - Tag releases; optionally publish a single-file HTML artifact.
 
