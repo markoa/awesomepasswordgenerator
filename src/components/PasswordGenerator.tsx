@@ -268,14 +268,9 @@ export default function PasswordGenerator() {
       <div className="border-t border-gray-200 dark:border-gray-700 pt-6 space-y-6">
         {/* Password Length */}
         <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <label htmlFor="length-slider" className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-              Password Length
-            </label>
-            <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
-              {settings.length}
-            </span>
-          </div>
+          <label htmlFor="length-slider" className="block text-sm font-semibold text-gray-900 dark:text-gray-100">
+            Password Length
+          </label>
           <div className="flex gap-4 items-center">
             <input
               id="length-slider"
