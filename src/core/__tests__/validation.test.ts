@@ -125,6 +125,31 @@ describe('normalizePasswordOptions', () => {
     expect(normalized.excludeAmbiguous).toBe(false);
     expect(normalized.requireEachClass).toBe(false);
   });
+
+  it('should merge partial include objects with defaults', () => {
+    // Only provide lowercase, others should default
+    const normalized = normalizePasswordOptions({
+      include: {
+        lowercase: true,
+        // uppercase, digits, symbols not provided
+      },
+    });
+    expect(normalized.include.lowercase).toBe(true);
+    expect(normalized.include.uppercase).toBe(true); // default
+    expect(normalized.include.digits).toBe(true); // default
+    expect(normalized.include.symbols).toBe(false); // default
+
+    // Provide only symbols: true, others should default
+    const normalized2 = normalizePasswordOptions({
+      include: {
+        symbols: true,
+      },
+    });
+    expect(normalized2.include.lowercase).toBe(true); // default
+    expect(normalized2.include.uppercase).toBe(true); // default
+    expect(normalized2.include.digits).toBe(true); // default
+    expect(normalized2.include.symbols).toBe(true); // provided
+  });
 });
 
 describe('validatePassphraseOptions', () => {

@@ -62,6 +62,8 @@ export function validatePasswordOptions(
 /**
  * Normalize password options with defaults
  * SPEC §5.1: Default password settings
+ * 
+ * Merges partial include objects with defaults to avoid undefined fields
  */
 export function normalizePasswordOptions(
   options: Partial<PasswordOptions>
@@ -74,12 +76,21 @@ export function normalizePasswordOptions(
     )
   );
 
-  const include = options.include ?? {
+  // Merge partial include objects with defaults
+  const defaultInclude = {
     lowercase: true,
     uppercase: true,
     digits: true,
     symbols: false,
   };
+  const include = options.include
+    ? {
+        lowercase: options.include.lowercase ?? defaultInclude.lowercase,
+        uppercase: options.include.uppercase ?? defaultInclude.uppercase,
+        digits: options.include.digits ?? defaultInclude.digits,
+        symbols: options.include.symbols ?? defaultInclude.symbols,
+      }
+    : defaultInclude;
 
   return {
     length,

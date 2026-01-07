@@ -5,6 +5,7 @@
  */
 
 export { generatePassword, estimateEntropy } from './password';
+export { generatePassphrase } from './passphrase';
 export {
   validatePasswordOptions,
   normalizePasswordOptions,

@@ -5,20 +5,34 @@ import type {
 } from './types';
 import { defaultRng, uniformRandomIndex, shuffle } from './random';
 import { buildCharset, getClassCharsets } from './charsets';
-import { normalizePasswordOptions } from './validation';
+import {
+  normalizePasswordOptions,
+  validatePasswordOptions,
+} from './validation';
 
 /**
  * Generate a password according to the options
  * SPEC §3.1: Password mode (required)
+ * SPEC §6.4: The generator must reject/normalize invalid configurations
  * 
  * @param options Password generation options
  * @param rng Optional RNG function (defaults to crypto.getRandomValues)
  * @returns Generated password string
+ * @throws Error if options are invalid and cannot be normalized
  */
 export function generatePassword(
   options: Partial<PasswordOptions>,
   rng: RngBytes = defaultRng
 ): string {
+  // Validate before normalizing to catch invalid configs
+  // Normalization clamps values, but we should reject truly invalid configs
+  const validation = validatePasswordOptions(options);
+  if (!validation.valid) {
+    throw new Error(
+      `Invalid password options: ${validation.errors.join(', ')}`
+    );
+  }
+
   const normalized = normalizePasswordOptions(options);
 
   // Build character sets

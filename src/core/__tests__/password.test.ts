@@ -153,6 +153,7 @@ describe('generatePassword', () => {
   });
 
   it('should throw error when no characters are available', () => {
+    // Now validation catches this before generation
     expect(() => {
       generatePassword({
         include: {
@@ -162,7 +163,42 @@ describe('generatePassword', () => {
           symbols: false,
         },
       });
-    }).toThrow('No characters available');
+    }).toThrow('Invalid password options');
+  });
+
+  it('should throw error for invalid configs instead of silently normalizing', () => {
+    // Invalid: length too short for requireEachClass
+    expect(() => {
+      generatePassword({
+        length: 5,
+        include: {
+          lowercase: true,
+          uppercase: true,
+          digits: true,
+          symbols: true,
+        },
+        requireEachClass: true,
+      });
+    }).toThrow('Invalid password options');
+
+    // Invalid: length out of bounds
+    expect(() => {
+      generatePassword({
+        length: 200, // > PASSWORD_LENGTH_MAX
+      });
+    }).toThrow('Invalid password options');
+
+    // Invalid: no character classes enabled
+    expect(() => {
+      generatePassword({
+        include: {
+          lowercase: false,
+          uppercase: false,
+          digits: false,
+          symbols: false,
+        },
+      });
+    }).toThrow('Invalid password options');
   });
 
   it('should handle minimum length correctly', () => {
