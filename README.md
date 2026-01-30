@@ -21,6 +21,8 @@ npm run test
 
 Built with Astro, React, Tailwind CSS, and TypeScript.
 
+PWA-ready: install it on your device and use it offline.
+
 Deploys on Cloudflare Pages after running the test suite.
 
 ## Security & privacy
