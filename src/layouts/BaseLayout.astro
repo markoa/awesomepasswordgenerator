@@ -21,7 +21,6 @@ const { title, description } = Astro.props;
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="APG" />
-    <link rel="manifest" href="/site.webmanifest" />
     {pwaInfo?.webManifest && <link rel="manifest" href={pwaInfo.webManifest.href} />}
   </head>
   <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans antialiased flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
