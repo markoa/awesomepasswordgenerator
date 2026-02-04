@@ -35,6 +35,7 @@
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
+    "@vite-pwa/astro": "^1.2.0",
     "@vitest/coverage-v8": "^2.1.8",
     "fast-check": "^4.5.3",
     "typescript": "^5.7.2",

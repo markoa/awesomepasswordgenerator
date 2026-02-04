@@ -1,50 +1,45 @@
 ---
-import '../styles/global.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<html lang="en" class="h-full">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Security guidance for Awesome Password Generator." />
-    <title>Security | Awesome Password Generator</title>
-  </head>
-  <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans antialiased flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
-    <main class="w-full max-w-2xl">
-      <header class="text-center mb-8 sm:mb-10">
-        <h1 class="text-3xl sm:text-4xl font-bold mb-2 text-gray-900 dark:text-white">
-          Security
-        </h1>
-        <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-md mx-auto">
-          The generator runs locally in your browser and works offline after the first load.
-        </p>
-      </header>
-      <section class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-6 sm:p-8 space-y-4 text-sm sm:text-base">
-        <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-          <li>Use this tool only on devices and browsers you trust.</li>
-          <li>Avoid shared or compromised machines when generating passwords.</li>
-          <li>Prefer a reputable password manager to store and autofill unique passwords.</li>
-        </ul>
-      </section>
-      <footer class="mt-8 text-center text-xs sm:text-sm text-gray-500 dark:text-gray-500">
-        <p>
-          <a href="/" class="underline hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-            ← Back to the generator
-          </a>
-          <span> • </span>
-          <a href="/privacy" class="underline hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-            Privacy
-          </a>
-          <span> • </span>
-          <a
-            href="https://github.com/markoa/awesomepasswordgenerator"
-            rel="noopener noreferrer"
-            class="underline hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
-          >
-            View source code
-          </a>
-        </p>
-      </footer>
-    </main>
-  </body>
-</html>
+<BaseLayout
+  title="Security | Awesome Password Generator"
+  description="Security guidance for Awesome Password Generator."
+>
+  <main class="w-full max-w-2xl">
+    <header class="text-center mb-8 sm:mb-10">
+      <h1 class="text-3xl sm:text-4xl font-bold mb-2 text-gray-900 dark:text-white">
+        Security
+      </h1>
+      <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-md mx-auto">
+        The generator runs locally in your browser and works offline after the first load.
+      </p>
+    </header>
+    <section class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-6 sm:p-8 space-y-4 text-sm sm:text-base">
+      <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
+        <li>Use this tool only on devices and browsers you trust.</li>
+        <li>Avoid shared or compromised machines when generating passwords.</li>
+        <li>Prefer a reputable password manager to store and autofill unique passwords.</li>
+      </ul>
+    </section>
+    <footer class="mt-8 text-center text-xs sm:text-sm text-gray-500 dark:text-gray-500">
+      <p>
+        <a href="/" class="underline hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+          ← Back to the generator
+        </a>
+        <span> • </span>
+        <a href="/privacy" class="underline hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+          Privacy
+        </a>
+        <span> • </span>
+        <a
+          href="https://github.com/markoa/awesomepasswordgenerator"
+          rel="noopener noreferrer"
+          class="underline hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+        >
+          View source code
+        </a>
+      </p>
+    </footer>
+  </main>
+</BaseLayout>

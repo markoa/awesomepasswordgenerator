@@ -1,51 +1,46 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
 import PasswordGenerator from '../components/PasswordGenerator';
-import '../styles/global.css'
 ---
 
-<html lang="en" class="h-full">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Generate strong, secure passwords locally in your browser. No tracking, no network calls, completely private." />
-    <title>Awesome Password Generator</title>
-  </head>
-  <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans antialiased flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
-    <div class="w-full max-w-2xl">
-      <header class="text-center mb-8 sm:mb-12">
-        <h1 class="text-3xl sm:text-4xl font-bold mb-2 text-gray-900 dark:text-white">
-          Awesome Password Generator
-        </h1>
-        <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-md mx-auto">
-          Create strong, secure passwords instantly. Everything happens in your browser—nothing is sent over the internet.
-        </p>
-      </header>
-      <PasswordGenerator client:load />
-      <footer class="mt-8 text-center text-xs sm:text-sm text-gray-500 dark:text-gray-500">
-        <p>
-          <a 
-            href="https://github.com/markoa/awesomepasswordgenerator"
-            rel="noopener noreferrer"
-            class="underline hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
-          >
-            View source code
-          </a>
-          <span> • </span>
-          <a 
-            href="/security" 
-            class="underline hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
-          >
-            Security
-          </a>
-          <span> • </span>
-          <a 
-            href="/privacy" 
-            class="underline hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
-          >
-            Privacy
-          </a>
-        </p>
-      </footer>
-    </div>
-  </body>
-</html>
+<BaseLayout
+  title="Awesome Password Generator"
+  description="Generate strong, secure passwords locally in your browser. No tracking, no network calls, completely private."
+>
+  <div class="w-full max-w-2xl">
+    <header class="text-center mb-8 sm:mb-12">
+      <h1 class="text-3xl sm:text-4xl font-bold mb-2 text-gray-900 dark:text-white">
+        Awesome Password Generator
+      </h1>
+      <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-md mx-auto">
+        Create strong, secure passwords instantly. Everything happens in your browser—nothing is sent over the internet.
+      </p>
+    </header>
+    <PasswordGenerator client:load />
+    <footer class="mt-8 text-center text-xs sm:text-sm text-gray-500 dark:text-gray-500">
+      <p>
+        <a
+          href="https://github.com/markoa/awesomepasswordgenerator"
+          rel="noopener noreferrer"
+          class="underline hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+        >
+          View source code
+        </a>
+        <span> • </span>
+        <a
+          href="/security"
+          class="underline hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+        >
+          Security
+        </a>
+        <span> • </span>
+        <a
+          href="/privacy"
+          class="underline hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+        >
+          Privacy
+        </a>
+      </p>
+    </footer>
+  </div>
+</BaseLayout>
